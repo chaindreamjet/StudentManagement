@@ -12,20 +12,22 @@ var db = require('./database');
 //db_init;
 
 var queryData = {
-    queryResult: new Array(),
+    //queryResult: new Array(),
     
     queryName:function(query_sentence){//query by Name  
-        db.connection.query(query_sentence,(er,result,feild)=>{
-            if(er) throw er;
-            console.log(result); //print queryings' result in terminal.
-            this.queryResult.push(result) //push queryings' result in a varable.
+        return new Promise((resolve,reject)=>{
+            db.connection.query(query_sentence,(er,result,feild)=>{
+                if(er) reject(er);
+                resolve(result)
+                //this.queryResult.push(result) //push queryings' result in a varable.
+            })
         })
     },
 
     queryMajor:function(){//query by Major
         db.connection.query(query_sentence,(er,result,feild)=>{
             if(er) throw er;
-            console.log(result); //print queryings' result in terminal.
+            //console.log(result); //print queryings' result in terminal.
             this.queryResult.push(result); //push queryings' result in a varable.
         })
     },
@@ -33,7 +35,7 @@ var queryData = {
     queryNumber:function(){//query by students number
         db.connection.query(query_sentence,(er,result,feild)=>{
             if(er) throw er;
-            console.log(result); //print queryings' result in terminal.
+            //console.log(result); //print queryings' result in terminal.
             this.queryResult.push(result); //push queryings' result in a varable.
         })
     }

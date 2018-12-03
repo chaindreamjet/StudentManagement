@@ -5,7 +5,7 @@ exports.connection = mysql.createConnection({
     port: '3306',
     user: 'root',
     password: 'liuqian77',
-    database: 'db1'
+    database: 'bdcc'
 
 })//.connect(//()=>{
     //console.log('conneced success')

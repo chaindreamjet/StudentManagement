@@ -11,8 +11,8 @@ var db = require('./database');
 
 //db_init;
 
-var addData = (dbSentence,addData)=>{
-    db.connection.query(dbSentence,addData,(er,res,feilds)=>{
+var addData = (dbSentence)=>{
+    db.connection.query(dbSentence,(er,res,feilds)=>{
         if(er) throw er;
         console('have been inserted.')
     })
