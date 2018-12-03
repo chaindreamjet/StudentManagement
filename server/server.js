@@ -18,14 +18,18 @@ app.get('/login_page',(req,res)=>{//For login's page router;
     res.send('bibi');
 })
 */
-
-app.get('/home_page',(req,res)=>{//For home page's router; 
+app.use(express.static('public'));
+app.get('/index.html',(req,res)=>{
+    res.sendFile(__dirname+'/'+'index.html')
+})
+app.post('/',(req,res)=>{//For home page's router; 
+    /*
     var stu_info ={
         'add_info':    req.body.jsonData_0,
         'update_info': req.body.jsonData_1    
     }
     var querysentence = 'insert into student1 values('
-    for(let key in stu_info.add_info) 
+    for(var key in stu_info.add_info) 
         querysentence +=stu_info.add_info[key]+','; 
         while(key == 'stime') 
             querysentence -= ','
@@ -34,6 +38,8 @@ app.get('/home_page',(req,res)=>{//For home page's router;
     add_sql(querysentence).then((ans)=>{
         
     });
+    */
+    res.send('for test')
 })
 
 app.get('/serch',(req,res)=>{//For the function of searchingl
@@ -45,8 +51,9 @@ query_sql.queryName('select * from manager1;').then((ans)=>{
     console.log(ans);
 })
 
-
-app.listen(3000,()=>{
+//res.end('test')
+const hostname = 'localhost'
+app.listen(3000,hostname,()=>{
     console.log("connecting to port 3000...")
     //query_0.query.queryName('gggg')
     
