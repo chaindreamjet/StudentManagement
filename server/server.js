@@ -22,34 +22,50 @@ app.use(express.static('public'));
 app.get('/index.html',(req,res)=>{
     res.sendFile(__dirname+'/'+'index.html')
 })
-app.post('/',(req,res)=>{//For home page's router; 
-    /*
+app.post('/add_stu',(req,res)=>{//For home page's router; 
+    
     var stu_info ={
         'add_info':    req.body.jsonData_0,
         'update_info': req.body.jsonData_1    
     }
-    var querysentence = 'insert into student1 values('
+    var querysentence = 'insert into student1 values ('
     for(var key in stu_info.add_info) 
         querysentence +=stu_info.add_info[key]+','; 
         while(key == 'stime') 
             querysentence -= ','
             querysentence += ');'
     
-    add_sql(querysentence).then((ans)=>{
-        
-    });
-    */
-    res.send('for test')
+    add_sql(querysentence);
+    //console.log('insert success.')
+    res.end()
 })
+
+app.post('/delete_stu',(req,res)=>{
+    
+    var sname = req.body.sname;
+    var querysentence = 'delete from student1 where sname='+sname+';';
+    add_sql(querysentence)
+
+    res.end();
+})
+
+app.post('/search_stu',(req,res)=>{
+    var sname = req.body.sname 
+    var querysentence = "select * from student1 where sname="+sname+";"
+    add_sql(querysentence).then((ans)=>{
+        res.send(ans[0]);
+    })
+})
+
 
 app.get('/serch',(req,res)=>{//For the function of searchingl
 
 })
 // for test demo
-query_sql.queryName('select * from manager1;').then((ans)=>{
+//query_sql.queryName('select * from manager1;').then((ans)=>{
 
-    console.log(ans);
-})
+//    console.log(ans);
+//})
 
 //res.end('test')
 const hostname = 'localhost'
