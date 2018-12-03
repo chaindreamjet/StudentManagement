@@ -1,6 +1,9 @@
 var db = require('./databaseServer/database');
 var query_0 = require('./databaseServer/query');
 var adddb = require('./databaseServer/addData');
+var bparse= require('body-parser')
+
+
 db.connection.connect();
 
 var express = require('express');
@@ -18,49 +21,102 @@ app.get('/login_page',(req,res)=>{//For login's page router;
     res.send('bibi');
 })
 */
+app.use(bparse.urlencoded({extended:true}))
 app.use(express.static('public'));
 app.get('/index.html',(req,res)=>{
     res.sendFile(__dirname+'/'+'index.html')
 })
+
+app.get('/students',(req,res)=>{
+    var querysentence = 'select * from student1;';
+    add_sql(querysentence).then((ans)=>{
+        //console.log(ans)
+        res.send(JSON.stringify(ans))
+    });
+})
 app.post('/add_stu',(req,res)=>{//For home page's router; 
     
     var stu_info ={
-        'add_info':    req.body.jsonData_0,
-        'update_info': req.body.jsonData_1    
+       'add_info':    req.body
     }
-    var querysentence = 'insert into student1 values ('
-    for(var key in stu_info.add_info) 
-        querysentence +=stu_info.add_info[key]+','; 
-        while(key == 'stime') 
-            querysentence -= ','
-            querysentence += ');'
-    
-    add_sql(querysentence);
+    //console.log(stu_info.add_info)
+    //console.log(req)
+    var querysentence = 'insert into student1'
+    var values = "('"
+    var keys = '('
+    for(var key in stu_info.add_info) {
+       // console.log(key)
+        keys += key
+        values += stu_info.add_info[key]
+        // querysentence += "'" + stu_info.add_info[key] + "'"; 
+        if(key === 'stime'){ 
+            keys += ')'
+            values += "')"
+            
+        } else {
+            keys += ','
+            values += "','"
+        }
+        //console.log(querysentence)
+    }
+
+    querysentence += keys + ' values' + values + ';' 
+
+    var querysentence_2 = 'select * from student1'
+    console.log(querysentence)      
+    add_sql(querysentence).then(()=>{
+        add_sql(querysentence_2).then((ans)=>{
+            console.log(ans)
+            res.send(JSON.stringify(ans))
+        })
+    });
+    //console.log(querysentence)
     //console.log('insert success.')
-    res.end()
+    
 })
 
 app.post('/delete_stu',(req,res)=>{
     
-    var sname = req.body.sname;
-    var querysentence = 'delete from student1 where sname='+sname+';';
-    add_sql(querysentence)
+    var snum = req.body;
+    var sunm_0;
+    //console.log(JSON.stringify(snum))
+    for(var key in snum){
+        //console.log(key)
+        sunm_0=key;
+    }
+    console.log(sunm_0)
 
-    res.end();
+    var querysentence_2 = 'select * from student1'
+    var querysentence = "delete from student1 where snum='"+sunm_0+"';";
+    console.log(querysentence)
+    add_sql(querysentence).then((ans)=>{
+        add_sql(querysentence_2).then((ans)=>{
+            console.log(ans)
+            res.send(JSON.stringify(ans))
+        })
+    })
+
+    //res.end();
 })
 
-app.post('/search_stu',(req,res)=>{
-    var sname = req.body.sname 
-    var querysentence = "select * from student1 where sname="+sname+";"
+app.post('/change_stu',(req,res)=>{
+    var sname_0 = req.body 
+    var querysentence_2 = 'select * from student1'
+    //console.log(sname);
+    var querysentence = "update student1 set sname='"+sname_0.sname+"',snum='"+sname_0.snum+"',sschool='"+sname_0.sschool+"',sclass='"+sname_0.sclass+"',sgender='"+sname_0.sgender+"',smajor='"+sname_0.smajor+"' where snum='"+sname_0.searchnum+"';"
+    console.log(querysentence)
     add_sql(querysentence).then((ans)=>{
-        res.send(ans[0]);
+        add_sql(querysentence_2).then((ans)=>{
+            //console.log(ans)
+            res.send(JSON.stringify(ans))
+        })
     })
 })
 
 
-app.get('/serch',(req,res)=>{//For the function of searchingl
+//app.get('/serch',(req,res)=>{//For the function of searchingl
 
-})
+//})
 // for test demo
 //query_sql.queryName('select * from manager1;').then((ans)=>{
 
