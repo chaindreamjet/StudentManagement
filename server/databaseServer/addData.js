@@ -12,10 +12,13 @@ var db = require('./database');
 //db_init;
 
 var addData = (dbSentence)=>{
+  return new Promise((resolve,reject)=>{
     db.connection.query(dbSentence,(er,res,feilds)=>{
-        if(er) throw er;
-        console('have been inserted.')
+        if(er)  reject(er);
+        resolve(res);
+        //console('have been inserted.')
     })
+  })
 }
 
 exports.addDB = addData;

@@ -20,7 +20,7 @@ app.get('/login_page',(req,res)=>{//For login's page router;
 */
 
 app.get('/home_page',(req,res)=>{//For home page's router; 
-    let stu_info ={
+    var stu_info ={
         'add_info':    req.body.jsonData_0,
         'update_info': req.body.jsonData_1    
     }
@@ -31,17 +31,20 @@ app.get('/home_page',(req,res)=>{//For home page's router;
             querysentence -= ','
             querysentence += ');'
     
-    add_sql(querysentence);
+    add_sql(querysentence).then((ans)=>{
+        
+    });
 })
 
 app.get('/serch',(req,res)=>{//For the function of searchingl
 
 })
+// for test demo
+query_sql.queryName('select * from manager1;').then((ans)=>{
 
-query_sql.queryName('show tables;').then((ans)=>{
-
-    console.log(typeof ans);
+    console.log(ans);
 })
+
 
 app.listen(3000,()=>{
     console.log("connecting to port 3000...")
