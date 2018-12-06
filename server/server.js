@@ -39,7 +39,7 @@ app.post('/add_stu',(req,res)=>{//For home page's router;
     var stu_info ={
        'add_info':    req.body
     }
-    //console.log(stu_info.add_info)
+    console.log(stu_info.add_info)
     //console.log(req)
     var querysentence = 'insert into student1'
     var values = "('"
@@ -66,7 +66,7 @@ app.post('/add_stu',(req,res)=>{//For home page's router;
     console.log(querysentence)      
     add_sql(querysentence).then(()=>{
         add_sql(querysentence_2).then((ans)=>{
-            console.log(ans)
+            //console.log(ans)
             res.send(JSON.stringify(ans))
         })
     });
@@ -74,24 +74,33 @@ app.post('/add_stu',(req,res)=>{//For home page's router;
     //console.log('insert success.')
     
 })
-
+app.post('/search_stu',(req,res)=>{
+    var querysentence="select * from student1 where sname='"+req.body+"':"
+    console.log(querysentence)
+    add_sql(querysentence).then((ans)=>{
+        
+            console.log(ans)
+            res.send(JSON.stringify(ans))
+        
+    })
+})
 app.post('/delete_stu',(req,res)=>{
     
     var snum = req.body;
-    var sunm_0;
+    var snum_0;
     //console.log(JSON.stringify(snum))
-    for(var key in snum){
-        //console.log(key)
-        sunm_0=key;
-    }
-    console.log(sunm_0)
-
+     for(var key in snum){
+    //     //console.log(key)
+         snum_0=key;
+     }
+    console.log(snum_0)
+    //console.log(snum);
     var querysentence_2 = 'select * from student1'
-    var querysentence = "delete from student1 where snum='"+sunm_0+"';";
+    var querysentence = "delete from student1 where snum='"+snum_0+"';";
     console.log(querysentence)
     add_sql(querysentence).then((ans)=>{
         add_sql(querysentence_2).then((ans)=>{
-            console.log(ans)
+           // console.log(ans)
             res.send(JSON.stringify(ans))
         })
     })

@@ -65,7 +65,7 @@ function serialize(form) {
                             optValue = '';
                             if (option.hasAttribute) {
                                 optValue = (option.hasAttribute("value") ?
-                                                option.value : option.text);
+                                                option.value : option.text);    
                             } else {
                                 optValue = (options.attributes["value"].specified ?
                                                 option.value : option.text);
@@ -108,27 +108,6 @@ function serialize(form) {
     return parts.join('&');
 }
 
-function refresh(data) {
-
-    var students = JSON.parse(data);
-
-    for (let s of students) {
-        let flag = false;
-        globalStudents.forEach((ele) => {
-            if (s.snum === ele.snum) {
-                flag = true;
-                return false;
-            }
-        });
-        if (flag) {
-            continue;
-        } else {
-            let stu = new Student(s.sname, s.sgender, s.snum, s.sschool, s.smajor, s.sclass, s.stime);
-            globalStudents.push(stu);
-        }
-    }
-}
-
 
 window.addEventListener('load', function () {
 
@@ -142,10 +121,10 @@ window.addEventListener('load', function () {
 
 });
 
-function addStu(event) {
-    event.preventDefault();
-    var form = document.querySelector('#stuInfo');
-    var enForm  = serialize(form);
+// function addStu(event) {
+//     event.preventDefault();
+//     var form = document.querySelector('#stuInfo');
+//     var enForm  = serialize(form);
     //console.log(typeof form)
 
     // ajax1('POST', 'http://localhost:3000/add_stu', enForm)
@@ -162,7 +141,7 @@ function addStu(event) {
     //     });
 
     
-}
+//}
 
 function add() {
     
@@ -187,7 +166,7 @@ function update_data(data){
     data_del=data;
 }
 function changestu(){
-    var data_init = $('#modifyStu').serialize()+"&searchnum="+$('#delete_num').text();
+    var data_init = $('#modifyStu').serialize()+"&searchnum="+globalStudents[change_var].snum;
     console.log(data_init)
     $.ajax({
         type: "POST",
@@ -229,6 +208,31 @@ function removestu(){
 }
 var globalStudents = [];
 
+function refresh(data) {
+
+    var students = JSON.parse(data);
+
+    for (let s of students) {
+        let flag = false;
+        globalStudents.forEach((ele) => {
+            if (s.snum === ele.snum) {
+                flag = true;
+                return false;
+            }
+        });
+        if (flag) {
+            continue;
+        } else {
+            let stu = new Student(s.sname, s.sgender, s.snum, s.sschool, s.smajor, s.sclass, s.stime);
+            globalStudents.push(stu);
+        }
+    }
+
+    console.log(globalStudents)
+}
+
+var change_var;
+
 var stuList = new Vue({
     el: '#stu-list',
     data: {
@@ -236,23 +240,34 @@ var stuList = new Vue({
     },
     methods: {
         modifyStu: function (index) {
-            ajax1('PUT', '/')
-                .then(function (data) {
-                    console.log(data);
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
+            change_var = index ;
+ 
         },
         removeStu: function (index) {
-            ajax1('GET', 'http://localhost:3000/delete_stu')
-                .then(function (data) {
-                    console.log(data);
-                    refresh(data)
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
+        //     ajax1('GET', 'http://localhost:3000/delete_stu')
+        //         .then(function (data) {
+        //             console.log(data);
+        //             refresh(data)
+        //         })
+        //         .catch(function (err) {
+        //             console.log(err);
+        //         });
+        // console.log(index)
+        // console.log(globalStudents[index])
+        // console.log(globalStudents[index].snum)
+
+        $.ajax({
+            type:'POST',
+            url: 'http://localhost:3000/delete_stu',
+            data: globalStudents[index].snum,
+            success: (data)=>{
+                refresh(data)
+                window.location.replace('http://localhost:3000')
+            },
+            error: ()=>{
+                console.log('err')
+            }
+        })
         }
     }
 })

@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-4">
                 <h4 class="mb-3">添加学生信息</h4>
-                <form id="stuInfo" onsubmit="return false">
+                <form id="stuInfo">
                     <div class="form-group">
                         <label for="sname">学生姓名</label>
                         <input type="text" name="sname" class="form-control" id="sname"
@@ -69,7 +69,7 @@
                         <label>入学年份</label>
                         <input type="date" name="stime" class="form-control" required>
                     </div>
-                    <button type="submit" onclick="add()" id="addStuBtn" class="btn btn-lg btn-primary col-12">添加学生</button>
+                    <input type="submit"  id="addStuBtn" onclick="add()" value="Add Student" class="btn btn-lg btn-primary col-12">
                 </form>
             </div>
             <div class="col-1"></div>
@@ -104,9 +104,9 @@
                                 </div>
                                 <div class="col-2">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-success btn-sm" onclick="update_data().text())"
+                                        <button type="button" class="btn btn-success btn-sm" v-on:click="modifyStu(index)"
                                                 data-toggle="modal" data-target="#modifyStuModal">修改</button>
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="removestu()">删除</button>
+                                        <button type="button" class="btn btn-danger btn-sm" v-on:click="removeStu(index)">删除</button>
                                     </div>
                                 </div>
                             </div>
