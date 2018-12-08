@@ -30,6 +30,9 @@ app.post('/add_stu',(req,res)=>{//For home page's router;
        'add_info':    req.body
     }
     console.log(stu_info.add_info)
+    if(stu_info.add_info.sname==''||stu_info.add_info.snum==''||stu_info.add_info.sgender==''||stu_info.add_info.smajor==''||stu_info.add_info.sclass==''){
+        res.end()
+    }
     var querysentence = 'insert into student1'
     var values = "('"
     var keys = '('
@@ -70,13 +73,15 @@ app.post('/search_stu',(req,res)=>{
 app.post('/delete_stu',(req,res)=>{
     
     var snum = req.body;
+    console.log(snum)
     var snum_0;
      for(var key in snum){
-         snum_0=key;
+         snum_0=snum[key];
      }
+     console.log(snum_0)
     console.log(snum_0)
     var querysentence_2 = 'select * from student1'
-    var querysentence = "delete from student1 where snum='"+snum_0+"';";
+    var querysentence = "delete from student1 where id='"+snum_0+"';";
     console.log(querysentence)
     add_sql(querysentence).then((ans)=>{
         add_sql(querysentence_2).then((ans)=>{
@@ -87,8 +92,9 @@ app.post('/delete_stu',(req,res)=>{
 
 app.post('/change_stu',(req,res)=>{
     var sname_0 = req.body 
+    console.log(sname_0)
     var querysentence_2 = 'select * from student1'
-    var querysentence = "update student1 set sname='"+sname_0.sname+"',snum='"+sname_0.snum+"',sschool='"+sname_0.sschool+"',sclass='"+sname_0.sclass+"',sgender='"+sname_0.sgender+"',smajor='"+sname_0.smajor+"' where snum='"+sname_0.searchnum+"';"
+    var querysentence = "update student1 set sname='"+sname_0.sname+"',snum='"+sname_0.snum+"',sschool='"+sname_0.sschool+"',sclass='"+sname_0.sclass+"',sgender='"+sname_0.sgender+"',smajor='"+sname_0.smajor+"' where id='"+sname_0.id+"';"
     console.log(querysentence)
     add_sql(querysentence).then((ans)=>{
         add_sql(querysentence_2).then((ans)=>{

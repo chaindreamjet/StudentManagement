@@ -1,8 +1,9 @@
 // index.js
 
 class Student {
-    constructor(sname = 'default', sgender = 'male', snum = '-1',
+    constructor(id = '-1',sname = 'default', sgender = 'male', snum = '-1',
                 sschool = '', smajor = '', sclass = '', stime = '2000-09-01') {
+        this.id = id;
         this.sname = sname;
         this.sgender = sgender;
         this.snum = snum;
@@ -13,261 +14,129 @@ class Student {
     }
 }
 
-function ajax1(method, url, data = '') {
-    return new Promise(function (resolve, reject) {
-
-        let xmlRequest = new XMLHttpRequest();
-        xmlRequest.onreadystatechange = function () {
-
-            if (xmlRequest.readyState === XMLHttpRequest.DONE) {
-                if (xmlRequest.status === 200) {
-                    resolve(xmlRequest.responseText);
-
-                } else {
-                    reject(new Error("请求错误编号: " + xmlRequest.status));
-                }
-            }
-        };
-
-
-        if (method === 'GET') {
-            xmlRequest.open(method, url, false);
-            xmlRequest.send(null);
-        }
-        if (method === 'POST') {
-            xmlRequest.open(method, url, true);
-            xmlRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xmlRequest.send(data);
-
-            console.log(data);
-        }
-    });
-}
-
-function serialize(form) {
-    var
-        parts = [],
-        field = null,
-        option,
-        optValue;
-
-    for (let i = 0, len = form.elements.length; i < len; ++ i) {
-        field = form.elements[i];
-
-        console.log(field.toString());
-        switch (field) {
-
-            case 'select':
-                if (field.name.length) {
-                    for (let j = 0, optLen = field.options.length; j < optLen; ++ j) {
-                        option = field.options[j];
-                        if (option.selected) {
-                            optValue = '';
-                            if (option.hasAttribute) {
-                                optValue = (option.hasAttribute("value") ?
-                                                option.value : option.text);    
-                            } else {
-                                optValue = (options.attributes["value"].specified ?
-                                                option.value : option.text);
-                            }
-                            parts.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(optValue));
-                        }
-                    }
-                }
-                break;
-
-            case undefined:
-            case 'file':
-            case 'submit':
-            case 'reset':
-            case 'button':
-                break;
-
-            case 'fieldset':
-                break;
-
-            case 'radio':
-                break;
-            case 'checkbox':
-                if (!field.checked) {
-                    break;
-                }
-            default:
-                if (field.name.length) {
-                    if (field.type === 'radio') {
-                        if (!field.checked) {
-                            break;
-                        }
-                    }
-
-                    parts.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value));
-                }
-        }
-    }
-
-    return parts.join('&');
-}
-
-
-window.addEventListener('load', function () {
-
-    ajax1('GET', 'http://localhost:3000/students').then(function (data) {
-        //console.log(data)
-        refresh(data);
-
-    }).catch(function (error) {
-        console.log(error);
-    });
-
-});
-
-// function addStu(event) {
-//     event.preventDefault();
-//     var form = document.querySelector('#stuInfo');
-//     var enForm  = serialize(form);
-    //console.log(typeof form)
-
-    // ajax1('POST', 'http://localhost:3000/add_stu', enForm)
-    //     .then(function (data) {
-    //         ajax1('GET', 'http://localhost:3000/add_stu')
-    //             .then(refresh(data))
-    //             .catch(function (err) {
-    //             console.log(err);
-    //         });
-
-    //     }).catch(function () {
-
-    //         alert('添加失败');
-    //     });
-
-    
-//}
-
-function add() {
-    
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "http://localhost:3000/add_stu",
-        data: $('#stuInfo').serialize(),
-        success: (result) => {
-            console.log('success');
-            //refresh(result)
-            window.location.replace("http://localhost:3000")
-        },
-        error: () => {
-            console.log('err');
-        }
-    })
-    
-}
-var data_del;
-function update_data(data){
-    data_del=data;
-}
-function changestu(){
-    var data_init = $('#modifyStu').serialize()+"&searchnum="+globalStudents[change_var].snum;
-    console.log(data_init)
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "http://localhost:3000/change_stu",
-        data:  data_init,
-        success: (result) => {
-            console.log('success');
-            //refresh(result)
-           window.location.replace("http://localhost:3000")
-        },
-        error: () => {
-            console.log('err');
-        }
-    })
-    
-}
-function removestu(){
-    var data_0 = $('delete_num').text()
-    var data_1;
-    for(var key in data_0){
-        data_1=key;
-    }
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "http://localhost:3000/delete_stu",
-        data: $('#delete_num').text(),
-        success: (result) => {
-            console.log('success');
-            //refresh(result)
-            window.location.replace("http://localhost:3000")
-        },
-        error: () => {
-            console.log('err');
-        }
-    })
-    
-}
-var globalStudents = [];
+let globalStudents = [];
 
 function refresh(data) {
 
-    var students = JSON.parse(data);
+    let
+        students = JSON.parse(data),
+        stu;
 
-    for (let s of students) {
-        let flag = false;
-        globalStudents.forEach((ele) => {
-            if (s.snum === ele.snum) {
-                flag = true;
-                return false;
-            }
-        });
-        if (flag) {
-            continue;
-        } else {
-            let stu = new Student(s.sname, s.sgender, s.snum, s.sschool, s.smajor, s.sclass, s.stime);
-            globalStudents.push(stu);
-        }
-    }
+    globalStudents = [];
 
-    console.log(globalStudents)
+    students.forEach((s) => {
+        stu = new Student(s.id, s.sname, s.sgender, s.snum, s.sschool, s.smajor, s.sclass, s.stime);
+        globalStudents.push(stu);
+    });
+
+    stuList.students = globalStudents;
+
 }
 
-var change_var;
+function findAll() {
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:3000/students",
+        success: (data) => {
+            refresh(data);
+        },
+        error: (error) => {
+            console.log(error);
+        }
+    });
+}
+
+function insertStu(event) {
+
+    // event.preventDefault();
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/add_stu",
+        data: $('#stuInfo').serialize(),
+        dataType: "text",
+        success: (data) => {
+             findAll();
+             alert("添加学生成功!");
+         },
+          error: (error) => {
+              alert("添加学生失败:" + error);
+         }
+    });
+}
+
+function modifyStu(event) {
+
+    event.preventDefault();
+    console.log($('#modifyStuForm').serialize())
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/change_stu",
+        data: $('#modifyStuForm').serialize(),
+        success: (data) => {
+            alert("修改成功!");
+            findAll();
+        },
+        error: (error) => {
+            alert('修改失败: ' + error);
+            console.log(error);
+        }
+    });
+    $('#modifyStuModal').modal('hide');
+
+}
+
+function deleteStu(id) {
+
+    let data = {
+        id: id
+    };
+
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/delete_stu",
+        data: data,
+        success: () => {
+            alert('删除成功!');
+            findAll();
+        },
+        error: (error) => {
+            alert("删除失败! " + error);
+            console.log(error);
+        }
+    })
+}
+
+window.addEventListener('load', findAll());
+
+$('#addStuBtn').on('click', (e) => {
+    insertStu(e);
+});
+
+$('#comfirmModifyBtn').on('click', (e) => {
+    modifyStu(e);
+});
 
 var stuList = new Vue({
     el: '#stu-list',
     data: {
-        students: globalStudents
+        students: {}
     },
     methods: {
-        modifyStu: function (index) {
-            change_var = index ;
- 
-        },
-        removeStu: function (index) {
-        //     ajax1('GET', 'http://localhost:3000/delete_stu')
-        //         .then(function (data) {
-        //             console.log(data);
-        //             refresh(data)
-        //         })
-        //         .catch(function (err) {
-        //             console.log(err);
-        //         });
-        // console.log(index)
-        // console.log(globalStudents[index])
-        // console.log(globalStudents[index].snum)
+        v_modifyStu: function (index) {
+            $('#modifyStuModal').modal('show');
+            let s = globalStudents[index];
 
-        $.ajax({
-            type:'POST',
-            url: 'http://localhost:3000/delete_stu',
-            data: globalStudents[index].snum,
-            success: (data)=>{
-                refresh(data)
-                window.location.replace('http://localhost:3000')
-            },
-            error: ()=>{
-                console.log('err')
-            }
-        })
+            $('#snameModal').val(s.sname);
+            $('#modifyStuForm input:radio[value='+ s.sgender +']').prop('checked', 'checked');
+            $('#snumModal').val(s.snum);
+            $('#sschoolModal').val(s.sschool);
+            $('#smajorModal').val(s.smajor);
+            $('#sclassModal').val(s.sclass);
+            $('#stimeModal').val(s.stime);
+            $('#modifyIdModal').val(s.id);
+        },
+        v_deleteStu: function (id) {
+            deleteStu(id);
         }
     }
-})
+});
